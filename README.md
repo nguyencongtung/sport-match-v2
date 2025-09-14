@@ -125,10 +125,10 @@ sportmatch-mvp/
 
 ### 5. Development Workflow
 - **Phase 1 (4-6 weeks)**:
-  - Initialize monorepo with Yarn Workspaces.
-  - Set up `/frontend` with React Native, React Navigation, and AsyncStorage.
-  - Set up `/backend` with Express, Mongoose, and JWT authentication.
-  - Implement User Profile (`/src/screens/ProfileScreen.js`, `/src/models/User.js`, `/src/routes/userRoutes.js`) and Find Friend (`/src/screens/FindFriendScreen.js`, `/src/routes/swipeRoutes.js`).
+  - [x] Initialize monorepo with Yarn Workspaces.
+  - [x] Set up `/frontend` with React Native, React Navigation, and AsyncStorage.
+  - [x] Set up `/backend` with Express, Mongoose, and JWT authentication.
+  - [x] Implement User Profile (`/src/screens/ProfileScreen.js`, `/src/models/User.js`, `/src/routes/userRoutes.js`) and Find Friend (`/src/screens/FindFriendScreen.js`, `/src/routes/swipeRoutes.js`).
 - **Phase 2 (3-4 weeks)**:
   - Add Chat (`/src/screens/ChatScreen.js`, `/src/sockets/chatSocket.js`) with Socket.IO.
   - Implement Matching (`/src/screens/MatchingScreen.js`, `/src/models/Match.js`).
