@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import cors
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -12,12 +13,18 @@ const chatSocket = require('./src/sockets/chatSocket');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // Allow all origins for socket.io for development
+    methods: ['GET', 'POST'],
+  },
+});
 
 const PORT = process.env.PORT || 5001;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sportmatch-mvp';
 
 // Middleware
+app.use(cors()); // Add cors middleware for express
 app.use(express.json());
 
 // Connect to MongoDB
