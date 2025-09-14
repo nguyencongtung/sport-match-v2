@@ -23,4 +23,9 @@ router.get('/profile', auth, userController.getProfile);
 // @access  Private
 router.put('/profile', auth, userController.updateProfile);
 
+// @route   GET api/users
+// @desc    Get all users (for swiping)
+// @access  Private
+router.get('/', auth, userController.getAllUsers);
+
 module.exports = router;

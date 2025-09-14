@@ -42,6 +42,17 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Exclude the current user from the list
+    const users = await User.find({ _id: { $ne: req.user.id } }).select('-password');
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {

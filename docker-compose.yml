@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/sportmatch-mvp
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/app/backend
+      - /app/backend/node_modules # Exclude node_modules from host mount
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./frontend:/app/frontend
+    # React Native development typically requires the packager to be accessible from the host
+    # and the mobile app (running on emulator/device) to connect to it.
+    # For a truly containerized frontend, you'd usually build a static web app or a mobile app image.
+    # This setup is primarily for managing frontend dependencies within Docker.
+
+volumes:
+  mongo-data:
