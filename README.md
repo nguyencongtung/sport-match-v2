@@ -1,1 +1,159 @@
-# sport-match-v2
+To implement the SportMatch MVP as outlined, a single repository with a monorepo structure is recommended for simplicity, maintainability, and streamlined development. This approach keeps all components (frontend, backend, and shared utilities) in one place, making it easier to manage dependencies, deployments, and collaboration for a lean MVP. Below, I’ll detail the repository structure, rationale, and considerations for the SportMatch MVP, adhering to the provided architecture principles and tech stack (React Native, Node.js/Express, MongoDB, AWS, Socket.IO).
+
+---
+
+### 1. Repository Strategy: Single Monorepo
+- **Why a Single Monorepo?**
+  - **Unified Development**: A single repo simplifies version control, CI/CD pipelines, and dependency management for a small team building an MVP.
+  - **Shared Code**: Common utilities (e.g., validation schemas, constants) can be shared between frontend (React Native) and backend (Node.js/Express) without needing separate packages.
+  - **Faster Iteration**: Aligns with the lean MVP focus by reducing overhead from managing multiple repositories.
+  - **Scalability**: A monorepo can scale for future features (e.g., team management) while maintaining modularity through folder organization.
+  - **Alternative (Multiple Repos)**: Separate repos for frontend and backend could be considered for larger teams or post-MVP scaling but add complexity (e.g., cross-repo dependency updates, separate CI/CD setups) that’s unnecessary for an MVP.
+
+- **When to Split?**: If the team grows significantly or post-MVP features demand independent scaling (e.g., microservices), you can split into frontend and backend repos. For now, a monorepo is lean and sufficient.
+
+---
+
+### 2. Proposed Monorepo Structure
+The monorepo will house the frontend (React Native), backend (Node.js/Express), and shared utilities, organized to reflect the modular design principle. Below is the recommended structure:
+
+```
+sportmatch-mvp/
+├── /frontend/                     # React Native app for iOS and Android
+│   ├── /src/
+│   │   ├── /components/          # Reusable UI components (e.g., UserCard, ChatBubble)
+│   │   │   ├── UserCard.js       # For swipe interface in Find Friend
+│   │   │   ├── ChatBubble.js     # For chat UI
+│   │   │   ├── MatchCard.js      # For match listing
+│   │   ├── /screens/             # Main app screens for each feature
+│   │   │   ├── ProfileScreen.js  # User Profile form
+│   │   │   ├── FindFriendScreen.js # Swipe-based friend finder
+│   │   │   ├── ChatScreen.js     # Real-time chat
+│   │   │   ├── MatchingScreen.js # Match discovery
+│   │   │   ├── CreateMatchScreen.js # Match creation form
+│   │   ├── /hooks/               # Custom React hooks (e.g., useAuth, useGeolocation)
+│   │   ├── /utils/               # Frontend utilities (e.g., AsyncStorage helpers)
+│   │   ├── /assets/              # Images, fonts, etc.
+│   │   ├── /navigation/          # React Navigation setup
+│   │   └── App.js                # Entry point for React Native
+│   ├── package.json              # Frontend dependencies (React Native, react-native-deck-swiper, react-native-gifted-chat)
+│   ├── metro.config.js           # Metro bundler config
+│   └── /ios/ & /android/         # Platform-specific configs
+├── /backend/                      # Node.js/Express backend
+│   ├── /src/
+│   │   ├── /controllers/         # API logic for each feature
+│   │   │   ├── userController.js # Profile CRUD
+│   │   │   ├── swipeController.js # Swipe and match logic
+│   │   │   ├── chatController.js # Message handling
+│   │   │   ├── matchController.js # Match CRUD and filtering
+│   │   ├── /models/              # MongoDB schemas
+│   │   │   ├── User.js           # User profile schema
+│   │   │   ├── Swipe.js          # Swipe tracking schema
+│   │   │   ├── Chat.js           # Chat message schema
+│   │   │   ├── Match.js          # Match schema
+│   │   ├── /routes/              # Express API routes
+│   │   │   ├── userRoutes.js     # /api/users endpoints
+│   │   │   ├── swipeRoutes.js    # /api/swipes and /api/matches
+│   │   │   ├── chatRoutes.js     # /api/messages and /api/chats
+│   │   │   ├── matchRoutes.js    # /api/matches and /api/matches/join
+│   │   ├── /middleware/          # Express middleware (e.g., JWT auth, validateMatch)
+│   │   ├── /sockets/             # Socket.IO logic
+│   │   │   └── chatSocket.js     # Real-time chat events
+│   │   ├── /utils/               # Backend utilities (e.g., geolocation helpers)
+│   │   └── server.js             # Express server entry point
+│   ├── package.json              # Backend dependencies (Express, Socket.IO, Mongoose)
+│   └── .env                      # Environment variables (MongoDB URI, JWT secret)
+├── /shared/                       # Shared utilities across frontend and backend
+│   ├── /constants/               # Shared constants (e.g., sports list, skill levels)
+│   ├── /validators/              # Shared validation schemas (e.g., profile, match)
+│   └── /types/                   # TypeScript types (if using TypeScript)
+├── /scripts/                      # Deployment and utility scripts
+│   ├── deploy.sh                 # AWS deployment script
+│   └── seed.js                   # MongoDB seeding for testing
+├── .gitignore                     # Ignore node_modules, .env, etc.
+├── README.md                      # Project overview and setup instructions
+└── package.json                   # Monorepo root (scripts for frontend/backend)
+```
+
+---
+
+### 3. Rationale for Structure
+- **Modular Design**:
+  - Frontend and backend are separated into `/frontend` and `/backend`, aligning with the modular principle.
+  - Within each, features (User Profile, Find Friend, Chat, Matching, Create Match) are organized into dedicated folders (e.g., `/screens`, `/controllers`, `/routes`), enabling independent development and testing.
+- **Scalability**:
+  - The structure supports AWS deployment (e.g., EC2 for backend, Amplify for frontend) with scripts in `/scripts`.
+  - MongoDB schemas in `/models` are flexible for evolving data needs (e.g., adding team management later).
+- **User-Centric**:
+  - Frontend `/screens` and `/components` focus on intuitive UI/UX (e.g., swipe interface, chat UI).
+  - Shared `/validators` ensure consistent data validation for a seamless experience.
+- **Lean MVP Focus**:
+  - Only core features are implemented, with clear separation (e.g., `/screens` for each feature).
+  - Shared utilities reduce code duplication, speeding up development.
+- **Real-Time Features**:
+  - `/backend/src/sockets` isolates Socket.IO logic for chat and match updates, ensuring maintainability.
+
+---
+
+### 4. Tooling and Setup
+- **Package Management**:
+  - Use Yarn Workspaces or npm workspaces at the root `package.json` to manage dependencies for `/frontend` and `/backend`.
+  - Example root `package.json`:
+    ```json
+    {
+      "name": "sportmatch-mvp",
+      "private": true,
+      "workspaces": ["frontend", "backend"],
+      "scripts": {
+        "frontend:dev": "cd frontend && yarn start",
+        "backend:dev": "cd backend && yarn start",
+        "deploy": "node scripts/deploy.js"
+      }
+    }
+    ```
+- **Version Control**:
+  - Use Git with `.gitignore` to exclude `node_modules`, `.env`, and platform-specific build files.
+  - Branching strategy: `main` for production, `develop` for integration, feature branches (e.g., `feature/user-profile`) for development.
+- **CI/CD**:
+  - Use GitHub Actions or AWS CodePipeline for automated testing and deployment.
+  - Example: Run Jest/Supertest for backend, React Native tests for frontend, and deploy to AWS.
+- **Environment Variables**:
+  - Store in `/backend/.env` (e.g., `MONGODB_URI`, `JWT_SECRET`, `AWS_ACCESS_KEY`).
+  - Use `react-native-config` for frontend environment variables.
+
+---
+
+### 5. Development Workflow
+- **Phase 1 (4-6 weeks)**:
+  - Initialize monorepo with Yarn Workspaces.
+  - Set up `/frontend` with React Native, React Navigation, and AsyncStorage.
+  - Set up `/backend` with Express, Mongoose, and JWT authentication.
+  - Implement User Profile (`/src/screens/ProfileScreen.js`, `/src/models/User.js`, `/src/routes/userRoutes.js`) and Find Friend (`/src/screens/FindFriendScreen.js`, `/src/routes/swipeRoutes.js`).
+- **Phase 2 (3-4 weeks)**:
+  - Add Chat (`/src/screens/ChatScreen.js`, `/src/sockets/chatSocket.js`) with Socket.IO.
+  - Implement Matching (`/src/screens/MatchingScreen.js`, `/src/models/Match.js`).
+- **Phase 3 (2-3 weeks)**:
+  - Build Create Match (`/src/screens/CreateMatchScreen.js`, `/src/routes/matchRoutes.js`).
+  - Integrate AWS SNS for notifications and analytics in `/shared`.
+- **Phase 4 (1-2 weeks)**:
+  - Deploy to AWS (EC2/Lambda for backend, Amplify for frontend).
+  - Test and launch on iOS/Android stores.
+
+---
+
+### 6. Additional Considerations
+- **Geolocation**: Store Google Maps API keys in `.env` and use `/shared/utils` for geolocation helpers.
+- **Security**: Implement JWT middleware in `/backend/src/middleware` and use `express-validator` in `/shared/validators`.
+- **Testing**: Place unit tests in `/frontend/__tests__` and `/backend/__tests__` using Jest/Supertest.
+- **Analytics**: Store analytics events in `/backend/src/models/Analytics.js` for tracking swipes, matches, etc.
+- **Edge Cases**: Handle no-GPS scenarios in `/frontend/src/utils/geolocation.js` and low-density match areas in `/backend/src/controllers/matchController.js`.
+
+---
+
+### 7. Why One Repo Wins for MVP
+- **Simplicity**: A single repo reduces setup and coordination overhead, critical for a 10-15 week MVP timeline.
+- **Modularity**: Folder structure mirrors the five core features, ensuring clear boundaries.
+- **Scalability**: Monorepo supports AWS deployment and MongoDB scaling without immediate need for microservices.
+- **Engagement**: Unified codebase ensures consistent UX across swipe, chat, and match features.
+
+If you need a specific part of the repo structure (e.g., detailed file contents, CI/CD scripts), let me know, and I can dive deeper!

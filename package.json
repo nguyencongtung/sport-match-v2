@@ -1,0 +1,10 @@
+{
+  "name": "sportmatch-mvp",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "frontend:dev": "cd frontend && yarn start",
+    "backend:dev": "cd backend && yarn start",
+    "deploy": "node scripts/deploy.js"
+  }
+}
