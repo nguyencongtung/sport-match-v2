@@ -1,0 +1,20 @@
+.chat-screen {
+  padding: 20px;
+  text-align: center;
+}
+
+.chat-screen h2 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px; /* Example height */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+}

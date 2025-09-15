@@ -1,0 +1,17 @@
+.matching-screen {
+  padding: 20px;
+  text-align: center;
+}
+
+.matching-screen h2 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.user-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}

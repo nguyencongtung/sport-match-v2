@@ -1,0 +1,10 @@
+.profile-screen {
+  padding: 20px;
+  text-align: center;
+}
+
+.profile-screen h2 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}

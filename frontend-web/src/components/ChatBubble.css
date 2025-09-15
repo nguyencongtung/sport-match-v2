@@ -1,0 +1,39 @@
+.chat-bubble {
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-message {
+  align-self: flex-end;
+  background-color: #007bff;
+}
+
+.other-message {
+  align-self: flex-start;
+  background-color: #e0e0e0;
+}
+
+.message-text {
+  font-size: 16px;
+  color: white;
+  margin: 0;
+}
+
+.other-message .message-text {
+  color: black;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #ccc;
+  align-self: flex-end;
+  margin-top: 5px;
+}
+
+.other-message .timestamp {
+  color: #777;
+}
